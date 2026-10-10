@@ -1,0 +1,139 @@
+[
+	{
+	"//1": "载入空岛模组时，屏蔽此任务。@：人在空岛，勿Cue。",
+	"type": "effect_on_condition",
+	"id": "EOC_GD_MISSION_DAY25",
+	"eoc_type": "EVENT",
+	"required_event": "character_wakes_up",
+	"condition": {
+		"and": [	
+		{ "math": [ "global_GD_tag_event_d25", "!=", " 1 " ] },
+		
+		{ "not": { "mod_is_loaded": "skyisland" } } ,
+		{ "days_since_cataclysm": 25 },
+		{ "not": { "days_since_cataclysm": 30 } } 
+		]
+		},
+	"effect": 
+		[ 
+		{ "math": [ "global_GD_tag_event_d25", "=", " 1 " ] },
+		{ "u_message": "半梦半醒间，你突然感觉身旁的空间正在剧烈波动，如地震般剧烈搖晃，此时弹出一段系统讯息。", "popup": true },
+		{ "u_message": "侦测到高威胁生物穿越空间裂缝！ \n威胁等级：<color_red>高于三阶</color>\n临时任务生成中...", "type": "info", "popup": true },
+		{ "u_message": "<color_red>【临时任务：杀死异常生物】</color>", "type": "info", "popup": true },
+		{ "assign_mission": "MISSION_GD_DAY25" },
+		{ "u_message": "一个巨型怪物从不稳定的空间裂缝穿出，即将落在你附近，危险！", "popup": true }
+		]
+	},
+
+	{
+	"id": "MISSION_GD_DAY25",
+	"type": "mission_definition",
+	"name": { "str": "杀死异常生物" },
+	"description": "从空间裂缝出现一只巨型怪物，击杀它！",
+	"goal": "MGOAL_KILL_MONSTERS",
+	"difficulty": 0,
+	"value": 0,
+	"start": {
+		"update_mapgen": { 
+		"place_monster": [
+			{ "monster": "mon_zombear_skeleton", "x": [ 1, 20 ], "y": [ 1, 20 ],   "target": true, "name": "猎杀目标" }
+		]
+		},
+		"effect": [ 
+		{"u_message": "","popup": false }
+		],
+		"assign_mission_target": {
+		"om_terrain": "backfloorchamber_north",
+		"om_terrain_replace": "backfloorchamber_north",
+		"om_terrain_match_type": "EXACT",
+		"search_range": 15,
+		"min_distance": 0,
+		"random": false
+		}
+	},
+	"end": { 
+		"effect": [ 
+		{ "math": [ "u_VP_Destiny", "+=", "150" ] },
+		{ "u_message": "突如其来的怪物终于倒下，你松了一口气，幸好在怪物出现时得到预警，此时系统发布了紧急公告，正是刚才空间错乱的消息！","popup": true },
+		{ "u_message": "『由于空间裂缝异常震荡，导致竞赛地点发生大规模怪物跃迁，未来系统将定时侦测空间裂缝，并于《任务之书》发布，选手可领取任务清理怪物，系统将额外发放奖励！』","popup": true },
+		{ "u_message": "系统能预测空间异变？\n \n你不明白空间裂缝是什么概念，但系统的能力显然不在地球科技能触及的范围，至少，不用再担心怪物突然跃迁到你头上，甚至能藉此猎杀怪物获取资源！","popup": true },
+		{ "u_message": "临时任务奖励：命运点数150点", "type": "info", "popup": false }
+		] 
+		}
+	},  
+
+
+	{
+    "type": "effect_on_condition",
+    "id": "EOC_GD_EVENT_DEFICIENCY_DESTINY01",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": {
+      "and": [	
+      { "compare_string": [ "GD_destiny_negative", { "context_val": "effect" } ] },
+      { "not": { "u_has_effect": "TAG_GD_EVENT_DEFICIENCY_DESTINY" } },
+	  { "not": {
+		"or": [
+		  { "u_has_item": "GD_item_emblem_d03" },
+		  { "u_has_item": "GD_item_emblem_d04" },
+		  { "u_has_item": "GD_item_emblem_d05" }
+		  ]
+		}
+	  }	  
+      ]
+      },
+    "effect": 
+      [ 
+      { "u_add_effect": "TAG_GD_EVENT_DEFICIENCY_DESTINY", "duration": "PERMANENT" },
+      { "u_spawn_item": "GD_item_destiny_restore01", "count": 1, "suppress_message": true },
+	  { "u_spawn_item": "GD_item_emblem_d03_shard", "count": 1, "suppress_message": true },
+	  
+      { "u_message": "你突然感到一阵虚弱，这种感觉与以往完全不同，旺盛的力量突然疲软，敏锐的反应也变得迟钝。", "popup": true },
+      { "u_message": "『玩家 <u_name>，当前状态：天命枯竭』\n \n『系统的超凡职业需消耗【命运】维持，【命运】不足时，玩家将受到属性惩罚。』", "popup": true },
+      { "u_message": "突如其来的讯息让你陷入错愕，你沉醉在解锁基因换取强大能力的过程，却没想自己换来的能力暗藏陷阱，而你根本<color_red>无法拒绝</color>。\n \n<color_dark_gray>『命运馈赠的礼物，皆已标价。』</color>\n你想起以前读过的文字，现在终于明白它的含意。", "popup": true },
+      { "u_message": "解开基因锁潜力的你，已无法舍弃这股力量，这是你立身的根本，只是现在到了还债的时候。", "popup": true },
+
+      { "u_message": "补充【命运】的方法：\n完成系统发布的任务，或使用道具─命运石，后者于完成特殊任务时获得。\n \n完成任务的补充、超凡职业的消耗皆随等级提升，少数称号能减缓【命运】消耗。", "popup": true },
+	  { "u_message": "获得道具 命运石", "popup": true },
+	  { "u_message": "<color_yellow>获得道具 不完整的徽章</color>", "type": "info", "popup": true },
+      { "u_message": "《任务之书》已更新", "popup": true },
+
+      { "u_message": "你握着命运石不发一语，你知道自己的超凡能力离不开系统，即使付出再多，也无法摆脫『棋子』的身份，只要系统拋出合适的奖励，包括你在内的所有人都无法拒绝。\n \n或许从你收到系统的那天，甚至是大灾变注定发生的那一刻起，你早已没有选择。", "popup": true }
+      ]
+    },
+
+	{
+	"//1": "继承人持有已合成称号，首次触发天命枯竭时的版本，不触发任务。",
+    "type": "effect_on_condition",
+    "id": "EOC_GD_EVENT_DEFICIENCY_DESTINY02",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": {
+      "and": [	
+		{ "compare_string": [ "GD_destiny_negative", { "context_val": "effect" } ] },
+		{ "not": { "u_has_effect": "TAG_GD_EVENT_DEFICIENCY_DESTINY" } },
+		{ "or": [
+			{ "u_has_item": "GD_item_emblem_d03_shard" },
+			{ "u_has_item": "GD_item_emblem_d03" },
+			{ "u_has_item": "GD_item_emblem_d04" },
+			{ "u_has_item": "GD_item_emblem_d05" }
+			]
+		}	  
+      ]
+      },
+    "effect": 
+      [ 
+      { "u_add_effect": "TAG_GD_EVENT_DEFICIENCY_DESTINY", "duration": "PERMANENT" },
+      { "u_spawn_item": "GD_item_destiny_restore01", "count": 1, "suppress_message": true },
+      { "u_message": "你突然感到一阵虚弱，这种感觉与以往完全不同，旺盛的力量突然疲软，敏锐的反应也变得迟钝。", "popup": true },
+      { "u_message": "『玩家 <u_name>，当前状态：天命枯竭』\n \n『系统开启的超凡职业，需消耗【命运】维持其稳定，【命运】不足时，玩家将受到属性惩罚。』", "popup": true },
+      { "u_message": "继承系统的你，对持有命运的代价早已有所猜测，在崩壞的末日中，你根本<color_light_red>无法拒绝</color>命运的邀请。\n \n<color_dark_gray>『命运馈赠的礼物，皆已标价。』</color>\n \n你想起以前读过的文字，现在你明白了它的含意。", "popup": true },
+
+      { "u_message": "补充【命运】的方法：\n完成系统发布的任务，或使用道具─命运石，后者于完成特殊任务时获得。\n \n完成任务的补充、超凡职业的消耗皆随等级提升，少数称号能减缓【命运】消耗。", "popup": true },
+	  { "u_message": "获得道具 命运石", "popup": true },
+      { "u_message": "《任务之书》已更新", "popup": true }
+      ]
+    }
+  
+
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "type": "MOD_INFO",
+    "id": "fate_backrooms_compat",
+    "name": "命运游戏与后室兼容补丁",
+    "authors": [ "YourName" ],
+    "description": "让命运游戏的任务在后室世界中正常工作：将任务目标地形替换为后室大厅 backfloorchamber。",
+    "category": "misc_additions",
+    "dependencies": [ "dda", "backrooms", "Game_of_Destiny" ]
+  }
+]
